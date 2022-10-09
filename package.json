@@ -4,5 +4,5 @@
     "version": "0.1.0",
     "unity": "2021.10",
     "description": "Simplify calls of audio clip by having lots of option embed into the class holder inspector",
-    "type": "library",
+    "type": "library"
 }
