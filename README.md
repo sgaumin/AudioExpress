@@ -17,6 +17,10 @@ From the inspector, we can assign audio clip and edit parameters
 
 ![Unity_HsQ9A4fd5Y](https://user-images.githubusercontent.com/16069763/194754562-21a9036e-b1dc-4176-9eda-061ce952f745.png)
 
+If you follow the hierarchy Assets/Sounds/Audio Mixer.mixer, mixer group will be automatically attached as well. Just make sure that the audio clip and the mixer group share the same name.
+
+![Unity_5mVYeFgDDV](https://user-images.githubusercontent.com/16069763/194755505-5bed038e-f7f6-4c95-a3d9-9bb33c8c9307.png)
+
 
 ### Scene View
 In the scene, Audio Units are automatically created and rearranged under an object called AudioParent
