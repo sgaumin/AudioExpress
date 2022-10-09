@@ -1,5 +1,5 @@
 # AudioExpress
-[![Unity 2018.4+](https://img.shields.io/badge/unity-2019.4%2B-blue.svg)](https://unity3d.com/get-unity/download)
+[![Unity 2018.4+](https://img.shields.io/badge/unity-2018.4%2B-blue.svg)](https://unity3d.com/get-unity/download)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/sgaumin/AudioExpress/blob/main/LICENSE.md)
 
 Unity library to setup and play 2D sound in a more convenient way: no need to attach a AudioSource component, all is managed in the background.
@@ -26,10 +26,12 @@ In the scene, Audio Units are automatically created and rearranged under an obje
 
 ### Code Example
 ```csharp
+using AudioExpress
+
 public class PlayerController : MonoBehaviour
 {
 	[Header("Audio")]
-	[SerializeField] private AudioExpress movementSound;
+	[SerializeField] private AudioConfig movementSound;
 
 	public void Move()
 	{
