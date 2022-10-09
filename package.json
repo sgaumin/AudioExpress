@@ -3,7 +3,8 @@
     "version": "0.1.0",
     "displayName": "Audio Express",
     "description": "Simplify calls of audio clip by having options embed into the class holder inspector",
-    "unity": "2021.10",
+    "unity": "2021.3",
+    "unityRelease": "10",
     "licensesUrl": "https://github.com/sgaumin/AudioExpress/blob/main/LICENSE.md",
     "author": {
         "name": "Sébastien Gaumin",
