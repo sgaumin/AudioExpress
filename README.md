@@ -39,3 +39,6 @@ public class PlayerController : MonoBehaviour
 	}
 }
 ```
+## License
+
+[MIT License](https://github.com/sgaumin/AudioExpress/blob/main/LICENSE.md)
