@@ -1,54 +1,62 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace AudioExpress
 {
-	public static class AudioPool
+	/// <summary>
+	/// Handles instantiated <see cref="AudioUnit"/> game objects in the scene.
+	/// </summary>
+	internal static class AudioPool
 	{
-		private const string audioPoolParent = "AudioParent";
-		private const string audioUnitPrefix = "AudioUnit: ";
+		private const string poolParent = "AudioExpress";
+		private const string unitPrefix = "AudioUnit: ";
 
-		private static List<AudioUnit> audioPool = new List<AudioUnit>();
-		private static GameObject audioParent;
+		private static List<AudioUnit> pool = new List<AudioUnit>();
+		private static GameObject holder;
 
-		public static void Reset()
+		internal static AudioUnit GetFromPool()
 		{
-			audioPool = new List<AudioUnit>();
-			audioParent = null;
-		}
-
-		public static AudioUnit GetFromPool()
-		{
-			if (audioParent == null)
+			// Check if we already have declare a game object holder for our units.
+			if (holder == null)
 			{
-				audioParent = new GameObject(audioPoolParent);
+				holder = new GameObject(poolParent);
 			}
 
-			AudioUnit audio = audioPool.Where(x => x != null && !x.gameObject.activeSelf).FirstOrDefault();
-			if (audio == null)
+			// Look for an available unit.
+			AudioUnit unit = null;
+			foreach (AudioUnit u in pool)
 			{
-				audio = new GameObject(audioUnitPrefix, typeof(AudioSource), typeof(AudioUnit)).GetComponent<AudioUnit>();
-				audioPool.Add(audio);
-				audio.transform.SetParent(audioParent.transform, false);
+				if (!u.gameObject.activeSelf)
+				{
+					unit = u;
+					break;
+				}
 			}
 
-			audio.name = audioUnitPrefix;
-
-			audio.OnPlay += delegate ()
+			// In the case that no unit has been found, we create a new one.
+			if (unit == null)
 			{
-				audio.gameObject.SetActive(true);
-			};
+				unit = new GameObject(unitPrefix, typeof(AudioSource), typeof(AudioUnit)).GetComponent<AudioUnit>();
+				unit.transform.SetParent(holder.transform, false);
+				unit.OnPlay += delegate ()
+				{
+					unit.gameObject.SetActive(true);
+				};
 
-			return audio;
+				pool.Add(unit);
+			}
+
+			unit.name = unitPrefix;
+
+			return unit;
 		}
 
-		public static void ReturnToPool(AudioUnit audio)
+		internal static void ReturnToPool(AudioUnit unit)
 		{
-			audio.gameObject.SetActive(false);
-			if (!audioPool.Contains(audio))
+			unit.gameObject.SetActive(false);
+			if (!pool.Contains(unit))
 			{
-				audioPool.Add(audio);
+				pool.Add(unit);
 			}
 		}
 	}
