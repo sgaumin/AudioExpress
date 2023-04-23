@@ -19,7 +19,7 @@ namespace AudioExpress
 			// Check if we already have declare a game object holder for our units.
 			if (holder == null)
 			{
-				holder = new GameObject(poolParent);
+				holder = new GameObject(poolParent, typeof(AudioPoolHolder));
 			}
 
 			// Look for an available unit.
