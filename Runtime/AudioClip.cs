@@ -16,11 +16,22 @@ namespace AudioExpress
 		[SerializeField] private bool loop;
 		[SerializeField] private PitchVariation pitchVariation;
 
+		internal bool IsUsingClips => isUsingClips;
+		internal UnityEngine.AudioClip Clip => clip;
+		internal UnityEngine.AudioClip[] Clips => clips;
+		internal AudioMixerGroup MixerGroup => mixerGroup;
+		internal bool Loop => loop;
+		internal PitchVariation PitchVariation => pitchVariation;
+
 		/// <summary>
-		/// Play sound using <see cref="AudioUnit"/>.
+		/// Indicates whether or not this <see cref="AudioClip"/> is playing any <see cref="AudioUnit"/>.
 		/// </summary>
-		/// <returns>Returns the reference of the <see cref="AudioUnit"/> used.</returns>
-		public AudioUnit Play()
+		public bool IsPlaying => AudioPool.IsPlaying(this);
+
+		/// <summary>
+		/// Plays a sound using <see cref="AudioUnit"/>.
+		/// </summary>
+		public void Play()
 		{
 			// Making sure that clip references are not null
 			bool issueDetected = false;
@@ -39,20 +50,20 @@ namespace AudioExpress
 			if (issueDetected)
 			{
 				Debug.LogError("AudioClip: Null clip reference detected!");
-				return null;
+				return;
 			}
 
-			// Initialization
-			AudioUnit audioUnit = AudioPool.GetFromPool();
-			audioUnit.Setup(isUsingClips ? clips : new UnityEngine.AudioClip[] { clip },
-							mixerGroup,
-							pitchVariation,
-							loop);
-
-			// Play Sound
+			AudioUnit audioUnit = AudioPool.Get();
+			audioUnit.Setup(this);
 			audioUnit.Play();
+		}
 
-			return audioUnit;
+		/// <summary>
+		/// Stops all <see cref="AudioUnit"/> currently playing this <see cref="AudioClip"/>.
+		/// </summary>
+		public void Stop()
+		{
+			AudioPool.Stop(this);
 		}
 	}
 }

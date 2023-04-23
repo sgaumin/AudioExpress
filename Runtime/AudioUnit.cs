@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 using Random = UnityEngine.Random;
@@ -9,10 +8,8 @@ namespace AudioExpress
 	/// <summary>
 	/// Handle playing sound on-demand using <see cref="AudioSource"/> component.
 	/// </summary>
-	public class AudioUnit : MonoBehaviour
+	internal class AudioUnit : MonoBehaviour
 	{
-		internal event Action OnPlay;
-
 		private AudioSource source;
 		private UnityEngine.AudioClip[] clips;
 		private AudioMixerGroup mixerGroup;
@@ -20,29 +17,43 @@ namespace AudioExpress
 		private bool loop;
 		private Coroutine returnningToPool;
 
-		internal void Setup(UnityEngine.AudioClip[] clips, AudioMixerGroup mixerGroup = null, PitchVariation pitchVariation = PitchVariation.None, bool loop = false)
+		internal AudioSource Source
 		{
-			this.clips = clips;
-			this.mixerGroup = mixerGroup;
-			this.pitchVariation = pitchVariation;
-			this.loop = loop;
+			get
+			{
+				if (source == null) source = GetComponent<AudioSource>();
+				return source;
+			}
 
-			source = GetComponent<AudioSource>();
-			source.playOnAwake = false;
-			source.volume = 1f;
+			private set { source = value; }
+		}
+		internal bool IsPlaying => Source.isPlaying;
+		internal AudioClip AudioClip { get; private set; }
+
+		internal void Setup(AudioClip audioClip)
+		{
+			AudioClip = audioClip;
+			clips = audioClip.IsUsingClips ? clips : new UnityEngine.AudioClip[] { audioClip.Clip };
+			mixerGroup = audioClip.MixerGroup;
+			pitchVariation = audioClip.PitchVariation;
+			loop = audioClip.Loop;
+
+			Source = GetComponent<AudioSource>();
+			Source.playOnAwake = false;
+			Source.volume = 1f;
 		}
 
-		public void Play()
+		internal void Play()
 		{
-			source.clip = clips[Random.Range(0, clips.Length)];
-			source.outputAudioMixerGroup = mixerGroup;
-			source.pitch = SetPitch(pitchVariation);
-			source.loop = loop;
+			Source.clip = clips[Random.Range(0, clips.Length)];
+			Source.outputAudioMixerGroup = mixerGroup;
+			Source.pitch = SetPitch(pitchVariation);
+			Source.loop = loop;
 
-			gameObject.name += source.clip.name.ToString();
+			gameObject.name += Source.clip.name.ToString();
 
-			OnPlay?.Invoke();
-			source.Play();
+			gameObject.SetActive(true);
+			Source.Play();
 
 			if (!loop)
 			{
@@ -50,11 +61,13 @@ namespace AudioExpress
 			}
 		}
 
-		public void StopAndReturnToPool()
+		internal void Stop()
 		{
-			source.Stop();
-			StopCoroutine(returnningToPool);
-			AudioPool.ReturnToPool(this);
+			Source.Stop();
+			AudioClip = null;
+			if (returnningToPool != null) StopCoroutine(returnningToPool);
+
+			AudioPool.Return(this);
 		}
 
 		private float SetPitch(PitchVariation variation)
@@ -78,8 +91,8 @@ namespace AudioExpress
 
 		private IEnumerator WaitBeforeReturningToPool()
 		{
-			yield return new WaitForSeconds(source.clip.length);
-			AudioPool.ReturnToPool(this);
+			yield return new WaitForSeconds(Source.clip.length);
+			AudioPool.Return(this);
 		}
 	}
 }

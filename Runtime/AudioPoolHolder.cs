@@ -1,3 +1,6 @@
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace AudioExpress
@@ -5,12 +8,38 @@ namespace AudioExpress
 	/// <summary>
 	/// Represents a <see cref="AudioPool"/> of <see cref="AudioUnit"/> instantiated in the scene.
 	/// </summary>
+	[ExecuteAlways]
 	internal class AudioPoolHolder : MonoBehaviour
 	{
 		private void Awake()
 		{
-			// Make sure to have this pool not associated with any scene
-			DontDestroyOnLoad(gameObject);
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+			{
+				EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+			}
+#endif
+
+			if (Application.isPlaying)
+			{
+				// Make sure to have this pool not associated with any scene
+				DontDestroyOnLoad(gameObject);
+			}
 		}
+
+		private void OnDestroy()
+		{
+			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+		}
+
+#if UNITY_EDITOR
+		private void OnPlayModeStateChanged(PlayModeStateChange state)
+		{
+			if (state == PlayModeStateChange.ExitingEditMode)
+			{
+				DestroyImmediate(gameObject);
+			}
+		}
+#endif
 	}
 }
