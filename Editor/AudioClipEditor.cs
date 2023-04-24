@@ -4,7 +4,7 @@ using UnityEngine;
 namespace AudioExpress
 {
 	[CustomEditor(typeof(AudioClip))]
-	public class AudioConfigEditor : Editor
+	internal class AudioClipEditor : Editor
 	{
 		AudioClip context;
 
