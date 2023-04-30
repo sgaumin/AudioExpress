@@ -34,14 +34,14 @@ namespace AudioExpress
 #endif
 		}
 
+#if UNITY_EDITOR
 		private void OnPlayModeStateChanged(PlayModeStateChange state)
 		{
-#if UNITY_EDITOR
 			if (state == PlayModeStateChange.ExitingEditMode)
 			{
 				DestroyImmediate(gameObject);
 			}
-#endif
 		}
+#endif
 	}
 }
