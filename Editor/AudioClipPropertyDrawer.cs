@@ -18,7 +18,11 @@ namespace AudioExpress
 		{
 			EditorGUI.BeginProperty(position, label, property);
 
-			AudioClip context = (AudioClip)property.objectReferenceValue;
+			AudioClip context = null;
+			if (property.objectReferenceValue is AudioClip audioClip)
+				context = audioClip;
+			else
+				property.objectReferenceValue = null;
 
 			Rect labelRect = new Rect(position.x, position.y, LABEL_WIDTH, position.height);
 			Rect propertyRect = new Rect(labelRect.x + labelRect.width, position.y, position.width - LABEL_WIDTH - PLAY_BUTTON_WIDTH, position.height);
