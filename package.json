@@ -1,6 +1,6 @@
 {
     "name": "com.sgaumin.audioexpress",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "displayName": "Audio Express",
 	"description": "Lightweight Unity Utility to quickly setup and play audio",
 	"unity": "2018.4",
