@@ -33,7 +33,7 @@ namespace AudioExpress
 		internal void Setup(AudioClip audioClip)
 		{
 			AudioClip = audioClip;
-			clips = audioClip.IsUsingClips ? clips : new UnityEngine.AudioClip[] { audioClip.Clip };
+			clips = audioClip.IsUsingClips ? audioClip.Clips : new UnityEngine.AudioClip[] { audioClip.Clip };
 			mixerGroup = audioClip.MixerGroup;
 			pitchVariation = audioClip.PitchVariation;
 			loop = audioClip.Loop;
